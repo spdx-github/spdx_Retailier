@@ -1,6 +1,6 @@
 {
   "name": "Retailier",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://github.com/spdx-github/spdx_Retailier",
   "description": "Adds existing game items to the vendor lists, as well as some that aren't currently used.",
   "author": "spdx",
