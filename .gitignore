@@ -1,3 +1,4 @@
 .vs/*
-Properties/*
-lib/*
+Properties
+lib
+obj
