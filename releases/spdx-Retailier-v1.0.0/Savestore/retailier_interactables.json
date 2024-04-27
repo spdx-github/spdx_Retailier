@@ -1,0 +1,29 @@
+{
+	"BanhMi" : {
+		"destroyWhenAllConsumed": true
+	},
+	"BungeoPpangWhole" : {
+		"destroyWhenAllConsumed": true
+	},
+	"Eclair" : {
+		"destroyWhenAllConsumed": true
+	},
+	"FairyBread" : {
+		"destroyWhenAllConsumed": true
+	},
+	"KabuliBurger" : {
+		"destroyWhenAllConsumed": true
+	},
+	"ReubenSandwich" : {
+		"destroyWhenAllConsumed": true
+	},
+	"TikaToast" : {
+		"destroyWhenAllConsumed": true
+	},
+	"TinnedFood" : {
+		"value" : [ "Vector2", "2", "4" ]
+	},
+	"YorkiePie" : {
+		"destroyWhenAllConsumed": true
+	}
+}
