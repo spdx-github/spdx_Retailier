@@ -1,0 +1,109 @@
+{
+	"Aliases" : {
+		"Bar" : [ "AmericanBar" ],
+		"ChineseEatery" : ["Chinese"],
+		"FastFood" : ["AmericanDiner"],
+		"HardwareStore" : ["Hardware"]
+	},
+	
+	"Combines" : {
+		"Supermarket" : ["SupermarketFruit", "SupermarketMagazines", "SupermarketShelf"]
+	},
+	
+	"Menus" : {
+		"AmericanBar" : [
+			"FishNChipsInBox",
+			"MushyPeas",
+			"YorkiePie",
+			"TikaToast"
+		],
+		"AmericanDiner" : [
+			"ReubenSandwich",
+			"PoutineInBox"
+		],
+		"Ballroom" : [
+			"Eclair"
+		],
+		"BlackmarketTrader" : [
+			"PropGun",
+			"Diamond",
+			"JadeNecklace",
+			"ClawOfTheFathomsFirstEdition",
+			"ChateauDArc1868"
+		],
+		"Chemist" : [
+			"Glasses",
+			"ToiletBrush"
+		],
+		"Chinese" : [
+			"Fishlafel",
+			"KabuliBurger",
+			"BanhMi",
+			"BungeoPpangWhole",
+			"BreathMints"
+		],
+		"Hardware" : [
+			"PhotoChemicals",
+			"FilmCanister",
+			"Plunger",
+			"MugEmpty",
+			"PaintBucket",
+			"PaintTube",
+			"PaintBrush",
+			"Pallette",
+			"CleanPlate",
+			"CleaningSpray",
+			"PowerDrill",
+			"PackingTape",
+			"DuctTape",
+			"Wool",
+			"Thread",
+			"KnittingNeedle",
+			"JerryCan",
+			"OilCan",
+			"Bleach"
+		],
+		"PawnShop" : [
+			"JadeNecklace",
+			"WristWatch",
+			"PocketWatch",
+			"FilmCanister",
+			"Katana",
+			"TradingCard",
+			"BaseballCap"
+		],
+		"SupermarketFruit" : [
+			"MegaMite",
+			"Ketchup",
+			"Mustard",
+			"Vinegar",
+			"Salt",
+			"Pepper",
+			"TinnedFood",
+			"FairyBread",
+			"PickapepperSauce"
+		],
+		"SupermarketMagazines" : [
+			"PackingTape",
+			"Pencil",
+			"Sharpener",
+			"Eraser",
+			"VideoTape"
+		],
+		"SupermarketShelf" : [
+			"Toothbrush",
+			"Sponge",
+			"Comb",
+			"Camera",
+			"FilmCanister",
+			"MugEmpty",
+			"Teacup",
+			"WristWatch",
+			"Battery",
+			"Battery9V",
+			"WhiteDice",
+			"RedDice",
+			"Bleach"
+		]
+	}
+}

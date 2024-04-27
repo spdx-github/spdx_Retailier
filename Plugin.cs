@@ -17,12 +17,12 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.0";
+	public const string PLUGIN_VERSION = "1.0.1";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
-	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}/retailier_menus.json";
-	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}/retailier_interactables.json";
+	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}\\retailier_menus.json";
+	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}\\retailier_interactables.json";
 
 	public static Dictionary<string, string[]> menus = SetupMenusDict(PLUGIN_PATH_MENUS);
 	public static List<KeyValuePair<string[], object>> interactables = SetupInteractablesList(PLUGIN_PATH_INTERACTABLES);
