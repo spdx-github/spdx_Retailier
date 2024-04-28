@@ -6,8 +6,6 @@ using SOD.Common;
 using Rewired.Utils;
 using System.Reflection;
 using System.Text.Json;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace Retailier;
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
@@ -17,7 +15,7 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.0.1";
+	public const string PLUGIN_VERSION = "1.0.3";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
@@ -136,15 +134,7 @@ public class Retailier : BasePlugin
 		foreach (KeyValuePair<string, string[]> menu in json["Menus"]) {
 			dict.Add(menu.Key, menu.Value);
 		}
-		// this handles aliases
-		foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
-		{
-			foreach (string alias in aliasSet.Value)
-			{
-				dict.Add(aliasSet.Key, json["Menus"][alias]);
-			}
-		}
-		// and finally, this handles combines, which are string arrays
+		// this handles combines
 		foreach (KeyValuePair<string, string[]> combine in json["Combines"])
 		{
 			// init as list so it's easy to append to
@@ -162,6 +152,14 @@ public class Retailier : BasePlugin
 			else
 			{
 				dict.Add(combine.Key, itemsToCombine.ToArray());
+			}
+		}
+		// this handles aliases
+		foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
+		{
+			foreach (string alias in aliasSet.Value)
+			{
+				dict.Add(aliasSet.Key, json["Menus"][alias]);
 			}
 		}
 
