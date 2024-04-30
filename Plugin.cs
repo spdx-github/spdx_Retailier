@@ -6,6 +6,8 @@ using SOD.Common;
 using Rewired.Utils;
 using System.Reflection;
 using System.Text.Json;
+using Il2CppInterop.Runtime;
+using System.Linq;
 
 namespace Retailier;
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
@@ -15,7 +17,7 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.0.3";
+	public const string PLUGIN_VERSION = "1.1.0";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
@@ -46,7 +48,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists(path))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true}, \"Eclair\": {\"destroyWhenAllConsumed\": true}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true}, \"TinnedFood\": {\"value\": [\"Vector2\", \"2\", \"4\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true}}";
+			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true}, \"Eclair\": {\"destroyWhenAllConsumed\": true}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"PocketWatch\": {\"isClock\": true, \"readingEnabled\": true, \"readingSource\": \"time\"}, \"Razor\": {\"fpsItemOffset\": [\"Vector3\", \"34\", \"-35\", \"-145\"]}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true}, \"TinnedFood\": {\"value\": [\"Vector2\", \"2\", \"4\"]}, \"WashingUpLiquid\": {\"value\": [\"Vector2\", \"5\", \"10\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true}}";
 
 			File.WriteAllText(path, table);
 
@@ -102,9 +104,13 @@ public class Retailier : BasePlugin
 									float.Parse(valueList[3])
 								);
 								break;
+							/*case "objects":
+								valueList.RemoveAt(0);
+								value = valueList.ToArray();
+								break;*/
 						}
 						break;
-				}
+				}	
 				
 				list.Add(new KeyValuePair<string[], object>(new string[] { item.Key, prop.Key }, value));
 			}
@@ -120,7 +126,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists(path))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\"]}}";
+			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"Razor\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}}";
 
 			File.WriteAllText(path, table);
 
@@ -180,8 +186,32 @@ public class Patches
 			foreach (var interactable in interactables)
 			{
 				InteractablePreset preset = Utils.GetInteractable(interactable.Key[0], false);
-				// since they're just KVPs with arrays for each, i can set them easy
-				Utils.SetInteractableProp(preset, interactable.Key[1], interactable.Value, false);
+
+				Type propType = preset.GetType().GetProperty(interactable.Key[1]).PropertyType;
+
+				if (propType.BaseType == typeof(Enum))
+				{
+					Utils.SetInteractableProp(preset, interactable.Key[1], Enum.Parse(propType, interactable.Value.ToString()), false);
+				}
+				/*else if (interactable.Value.GetType() == typeof(string[]))
+				{
+					Plugin.Log.LogInfo("Fired!");
+					// Lists have hard types
+					dynamic list = preset.GetType().GetProperty(interactable.Key[1]).GetValue(preset);
+					Type memberType = preset.GetType().GetGenericArguments()[0];
+					string[] names = (string[]) interactable.Value;
+
+					var objectsOfType = Toolbox.FindObjectsOfType(Il2CppType.From(memberType)).Where(preset => names.Contains(preset.name));
+
+					foreach (var obj in objectsOfType)
+					{
+						list.GetType().GetMethod("Add").Invoke(list, new object[] { obj } );
+					}
+				}*/
+				else
+				{
+					Utils.SetInteractableProp(preset, interactable.Key[1], interactable.Value, false);
+				}
 			}
 
 			Plugin.Log.LogInfo($"{Retailier.PLUGIN_GUID}: InteractablePresets patched!");
