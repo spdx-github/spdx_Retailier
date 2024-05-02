@@ -17,12 +17,12 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.1.1";
+	public const string PLUGIN_VERSION = "1.2.1";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
-	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}\\retailier_menus.json";
-	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}\\retailier_interactables.json";
+	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}\\menus\\";
+	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}\\interactables\\";
 
 	public static Dictionary<string, string[]> menus = SetupMenusDict(PLUGIN_PATH_MENUS);
 	public static List<KeyValuePair<string[], object>> interactables = SetupInteractablesList(PLUGIN_PATH_INTERACTABLES);
@@ -45,74 +45,84 @@ public class Retailier : BasePlugin
 	{
 		List<KeyValuePair<string[], object>> list = new List<KeyValuePair<string[], object>>();
 
-		if (!File.Exists(path))
+		if (!Directory.Exists(path))
+		{
+			Directory.CreateDirectory(path);
+		}
+
+		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
 			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true}, \"Eclair\": {\"destroyWhenAllConsumed\": true}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"PocketWatch\": {\"isClock\": true, \"readingEnabled\": true, \"readingSource\": \"time\"}, \"Razor\": {\"fpsItemOffset\": [\"Vector3\", \"34\", \"-35\", \"-145\"]}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true}, \"TinnedFood\": {\"value\": [\"Vector2\", \"2\", \"4\"]}, \"WashingUpLiquid\": {\"value\": [\"Vector2\", \"5\", \"10\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true}}";
 
-			File.WriteAllText(path, table);
+			File.WriteAllText($"{path}\\_base.json", table);
 
 			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default interactable table at {path}!");
 		}
 
-		string file = File.ReadAllText(path);
-		var json = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(file);
+		string[] fileNames = Directory.GetFiles(path, "*.json");
 
-		foreach (var item in json)
+		foreach (string fileName in fileNames)
 		{
-			object value = null;
+			string file = File.ReadAllText(fileName);
+			var json = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, JsonElement>>>(file);
 
-			foreach (var prop in item.Value)
+			foreach (var item in json)
 			{
-				switch (prop.Value.ValueKind)
+				object value = null;
+
+				foreach (var prop in item.Value)
 				{
-					case JsonValueKind.True:
-						value = true;
-						break;
-					case JsonValueKind.False:
-						value = false;
-						break;
-					case JsonValueKind.String:
-						value = prop.Value.ToString();
-						break;
-					case JsonValueKind.Number:
-						if (prop.Value.GetType() == typeof(int))
-						{
-							value = prop.Value.GetInt32();
-						}
-						else if (prop.Value.GetType() == typeof(double))
-						{
-							value = ((float) prop.Value.GetDouble());
-						}
-						break;
-					case JsonValueKind.Array:
-						// so arrays will be received as string lists
-						List<string> valueList = JsonSerializer.Deserialize<List<string>>(prop.Value);
-						// the first entry in the list will determine its type going forward
-						switch (valueList[0].ToString().ToLower())
-						{
-							case "vector2":
-								value = new Vector2(
-									float.Parse(valueList[1]),
-									float.Parse(valueList[2])
-								);
-								break;
-							case "vector3":
-								value = new Vector3(
-									float.Parse(valueList[1]),
-									float.Parse(valueList[2]),
-									float.Parse(valueList[3])
-								);
-								break;
-							/*case "objects":
-								valueList.RemoveAt(0);
-								value = valueList.ToArray();
-								break;*/
-						}
-						break;
-				}	
-				
-				list.Add(new KeyValuePair<string[], object>(new string[] { item.Key, prop.Key }, value));
+					switch (prop.Value.ValueKind)
+					{
+						case JsonValueKind.True:
+							value = true;
+							break;
+						case JsonValueKind.False:
+							value = false;
+							break;
+						case JsonValueKind.String:
+							value = prop.Value.ToString();
+							break;
+						case JsonValueKind.Number:
+							if (prop.Value.GetType() == typeof(int))
+							{
+								value = prop.Value.GetInt32();
+							}
+							else if (prop.Value.GetType() == typeof(double))
+							{
+								value = ((float)prop.Value.GetDouble());
+							}
+							break;
+						case JsonValueKind.Array:
+							// so arrays will be received as string lists
+							List<string> valueList = JsonSerializer.Deserialize<List<string>>(prop.Value);
+							// the first entry in the list will determine its type going forward
+							switch (valueList[0].ToString().ToLower())
+							{
+								case "vector2":
+									value = new Vector2(
+										float.Parse(valueList[1]),
+										float.Parse(valueList[2])
+									);
+									break;
+								case "vector3":
+									value = new Vector3(
+										float.Parse(valueList[1]),
+										float.Parse(valueList[2]),
+										float.Parse(valueList[3])
+									);
+									break;
+									/*case "objects":
+										valueList.RemoveAt(0);
+										value = valueList.ToArray();
+										break;*/
+							}
+							break;
+					}
+
+					list.Add(new KeyValuePair<string[], object>(new string[] { item.Key, prop.Key }, value));
+				}
 			}
 		}
 
@@ -123,61 +133,96 @@ public class Retailier : BasePlugin
 	{
 		Dictionary<string, string[]> dict = new Dictionary<string, string[]>();
 
-		if (!File.Exists(path))
+		if (!Directory.Exists(path))
+		{
+			Directory.CreateDirectory(path);
+		}
+
+		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Version\": { \"Number\": [\"1.1.1\"] }, \"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}}";
+			string table = "{\"Meta\": { \"Version\": [\"1.2.1\"], \"Override\": [\"False\"] }, \"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}}";
 
-			File.WriteAllText(path, table);
+			File.WriteAllText($"{path}\\_base.json", table);
 
 			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default menu table at {path}!");
 		}
 
-		string file = File.ReadAllText(path);
-		var json = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string[]>>>(file);
+		string[] fileNames = Directory.GetFiles(path, "*.json");
 
-		try
+		foreach (string fileName in fileNames)
 		{
-			if (json["Version"]["Number"][0] != PLUGIN_VERSION)
-			{
-				Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Version mismatch! Plugin is {PLUGIN_VERSION}, JSON version is {json["Version"]["Number"][0]}");
-			}
-		}
-		catch
-		{
-			Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Failed to get version from JSON, configuration predates 1.1.1");
-		}
+			string file = File.ReadAllText(fileName);
+			var json = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string[]>>>(file);
+			bool overrideOthers = false;
 
-		// handling Menus as in json
-		foreach (KeyValuePair<string, string[]> menu in json["Menus"]) {
-			dict.Add(menu.Key, menu.Value);
-		}
-		// this handles combines
-		foreach (KeyValuePair<string, string[]> combine in json["Combines"])
-		{
-			// init as list so it's easy to append to
-			List<string> itemsToCombine = new List<string>();
+			try
+			{
+				if (json["Meta"]["Version"][0] != PLUGIN_VERSION)
+				{
+					Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Version mismatch! Plugin is {PLUGIN_VERSION}, JSON version is {json["Meta"]["Version"][0]}");
+				}
 
-			foreach (string combineValKey in combine.Value)
-			{
-				itemsToCombine.AddRange(json["Menus"][combineValKey]);
+				overrideOthers = bool.Parse(json["Meta"]["Override"][0]);
 			}
-			// if the menu already exists:
-			if (dict.TryGetValue(combine.Key, out string[] existingItems))
+			catch
 			{
-				existingItems.Concat(itemsToCombine);
+				Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Failed to get version from JSON, configuration predates 1.1.1");
 			}
-			else
+
+			// handling Menus as in json
+			foreach (KeyValuePair<string, string[]> menu in json["Menus"])
 			{
-				dict.Add(combine.Key, itemsToCombine.ToArray());
+				if (!dict.TryGetValue(menu.Key, out string[] none))
+				{
+					dict.Add(menu.Key, menu.Value);
+				}
+				else if (overrideOthers)
+				{
+					dict[menu.Key] = menu.Value;
+				}
 			}
-		}
-		// this handles aliases
-		foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
-		{
-			foreach (string alias in aliasSet.Value)
+			// this handles combines
+			foreach (KeyValuePair<string, string[]> combine in json["Combines"])
 			{
-				dict.Add(aliasSet.Key, json["Menus"][alias]);
+				// init as list so it's easy to append to
+				List<string> itemsToCombine = new List<string>();
+
+				foreach (string combineValKey in combine.Value)
+				{
+					itemsToCombine.AddRange(json["Menus"][combineValKey]);
+				}
+
+				// if the menu already exists:
+				if (dict.TryGetValue(combine.Key, out string[] existingItems))
+				{
+					if (overrideOthers)
+					{
+						existingItems = itemsToCombine.ToArray();
+					}
+					else
+					{
+						existingItems.Concat(itemsToCombine);
+					}
+				}
+				else
+				{
+					dict.Add(combine.Key, itemsToCombine.ToArray());
+				}
+			}
+
+			// this handles aliases
+			foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
+			{
+				if (overrideOthers && dict.TryGetValue(aliasSet.Key, out string[] toClear))
+				{
+					dict.Remove(aliasSet.Key);
+				}
+
+				foreach (string alias in aliasSet.Value)
+				{
+					dict.Add(aliasSet.Key, json["Menus"][alias]);
+				}
 			}
 		}
 

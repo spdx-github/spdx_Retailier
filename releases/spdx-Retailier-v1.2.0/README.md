@@ -15,23 +15,23 @@ Installation is best done through r2modmanager and Thunderstore. Manual installa
 
 # Extended Functionality
 
-The mod generates a pair of files, each inside their own folder in the "Savestore" subdirectory on first run, which it then reads from. These files contain InteractablePreset names that are then pulled from the Toolbox's objectPresetDictionary by the code and modified.
+The mod generates a set of files inside the "Savestore" subdirectory on runtime, which it then reads from. These files contain InteractablePreset names that are then pulled from the Toolbox's objectPresetDictionary by the code and modified.
 
-## menus/
+The mod is relatively sandboxed, meaning that if an invalid name is added, the integrity of the game is preserved. For casual modders I would recommend the Unity Explorer available on the Thunderstore for browsing InteractablePresets and MenuPresets.
 
-This subdirectory contains all files pertaining to menu modifications. By default, `_base.json` is generated and placed inside for the mod to read from after its initial run.
+If you edit these files, please note that the game will throw an error if the JSON is improperly formatted - there are many JSON validators online which you can use to quickly check your file's good to go. Also, when the mod updates, these files might be changed or removed by r2modmanager. Please make a backup of modifications just in case!
 
-Retailier loads JSON files from this directory and assembles them into a dictionary, with string keys and string array values. Each key corresponds to a MenuPreset name, and their values are sets of InteractablePreset names.
+## retailier_menus.json
 
-You can add more files to this folder as long as they're formatted properly! Please refer to the base file for a reference.
+This file consists of three primary parts: Aliases, Combines, and Menus. The mod processes this JSON into a dictionary of string arrays.
 
-### Meta
+### Version
 
-This section contains version control information and whether or not its changes should completely replace (override) other changes. When set to false, these changes are additive.
+This is just a version number to help the mod track updates. Hopefully, files will be preserved between updates from now on.
 
 ### Menus
 
-Retailier processes this structure first, populating the corresponding MenuPreset name key with InteractablePreset names.
+The first to be processed. The key is the MenuPreset name, and the value is an array containing the InteractablePreset names you'd like to add.
 
 ### Combines
 
@@ -45,11 +45,9 @@ Aliases are last to be processed now that all the entries are configured. It's a
 
 Some businesses, for example the Chinese restaurant, have different names to the MenuPresets they use (ChineseEatery > Chinese). These businesses' sold items are replaced just before the game finalizes city generation, as items sold by businesses seem to be "locked in" to game saves to prevent them from changing. The process I use aims to preserve these values through use of the game's own pseudorandom number generation algorithm.
 
-## interactables/
+## retailier_interactables.json
 
-This subdirectory contains all files pertaining to interactable modifications. Like with `menus/`, a `_base.json` is generated, however it currently has no metadata and changes to existing names across tables may conflict.
-
-Retailier loads files in this directory and compiles them into a list of key-value pairs. Each key is a two-entry array containing the InteractablePreset name and the property you'd like to change, followed by a value of a supported datatype.
+This file contains a list of InteractablePreset names and keypairs, whose keys are property names. At runtime, the mod runs through this list and 
 
 Currently supported datatypes:
 
