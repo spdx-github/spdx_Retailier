@@ -28,7 +28,7 @@ public class Retailier : BasePlugin
 
 	public static Dictionary<string, string[]> menus = SetupMenusDict(PLUGIN_PATH_MENUS);
 	public static List<KeyValuePair<string[], object>> interactables = SetupInteractables(PLUGIN_PATH_INTERACTABLES);
-	public static List<KeyValuePair<string[], object>> furniture = SetupFurniture(PLUGIN_PATH_FURNITURE);
+	//public static List<KeyValuePair<string[], object>> furniture = SetupFurniture(PLUGIN_PATH_FURNITURE);
 
 	public override void Load()
 	{
@@ -54,7 +54,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true}, \"Eclair\": {\"destroyWhenAllConsumed\": true}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"PocketWatch\": {\"isClock\": true, \"readingEnabled\": true, \"readingSource\": \"time\"}, \"Razor\": {\"fpsItemOffset\": [\"Vector3\", \"34\", \"-35\", \"-145\"]}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true}, \"TinnedFood\": {\"value\": [\"Vector2\", \"2\", \"4\"]}, \"WashingUpLiquid\": {\"value\": [\"Vector2\", \"5\", \"10\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true}}";
+			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Hamburger\"}}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"Eclair\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"Gimbap\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Hamburger\"}}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"PocketWatch\": {\"isClock\": true, \"readingEnabled\": true, \"readingSource\": \"time\"}, \"Razor\": {\"fpsItemOffset\": [\"Vector3\", \"34\", \"-35\", \"-145\"]}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"TinnedFood\": {\"retailItem\": {\"Copies\": \"Donut\"}, \"value\": [\"Vector2\", \"2\", \"4\"]}, \"WashingUpLiquid\": {\"value\": [\"Vector2\", \"5\", \"10\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}}";
 
 			File.WriteAllText($"{path}\\_base.json", table);
 
@@ -65,7 +65,7 @@ public class Retailier : BasePlugin
 
 		return list;
 	}
-
+	/*
 	public static List<KeyValuePair<string[], object>> SetupFurniture(string path)
 	{
 		if (!Directory.Exists(path))
@@ -85,7 +85,7 @@ public class Retailier : BasePlugin
 		List<KeyValuePair<string[], object>> list = SetupPropertyList(path);
 
 		return list;
-	}
+	}*/
 
 	public static List<KeyValuePair<string[], object>> SetupPropertyList(string path)
 	{
@@ -104,7 +104,6 @@ public class Retailier : BasePlugin
 
 				foreach (KeyValuePair<string, JsonElement> prop in item.Value)
 				{
-					Plugin.Log.LogInfo($"{item.Key}.{prop.Key} is typeof {prop.Value.ValueKind.ToString()}");
 					// made this one in a fugue state so sorry if the comments are bullshit
 					if(prop.Value.ValueKind == JsonValueKind.Object)
 					{
@@ -144,7 +143,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Meta\": { \"Version\": [\"1.2.1\"], \"Override\": [\"False\"] }, \"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}}";
+			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.3.0\"]}}";
 
 			File.WriteAllText($"{path}\\_base.json", table);
 
@@ -248,8 +247,6 @@ public class Patches
 				InteractablePreset preset = Utils.GetInteractable(interactable.Key[0], false);
 
 				Type propType = preset.GetType().GetProperty(interactable.Key[1]).PropertyType;
-
-				Plugin.Log.LogInfo($"Preset property {interactable.Key[1]} type is typeof {propType.BaseType.Name}");
 
 				if (propType.BaseType == typeof(Enum))
 				{
