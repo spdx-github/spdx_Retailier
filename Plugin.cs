@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.Json;
 using Il2CppInterop.Runtime;
 using System.Linq;
+using System.Text.Json.Nodes;
 
 namespace Retailier;
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
@@ -17,15 +18,17 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.2.1";
+	public const string PLUGIN_VERSION = "1.3.0";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
 	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}\\menus\\";
 	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}\\interactables\\";
+	public static string PLUGIN_PATH_FURNITURE = $"{PLUGIN_PATH}\\furniture\\";
 
 	public static Dictionary<string, string[]> menus = SetupMenusDict(PLUGIN_PATH_MENUS);
-	public static List<KeyValuePair<string[], object>> interactables = SetupInteractablesList(PLUGIN_PATH_INTERACTABLES);
+	public static List<KeyValuePair<string[], object>> interactables = SetupInteractables(PLUGIN_PATH_INTERACTABLES);
+	public static List<KeyValuePair<string[], object>> furniture = SetupFurniture(PLUGIN_PATH_FURNITURE);
 
 	public override void Load()
 	{
@@ -41,10 +44,8 @@ public class Retailier : BasePlugin
 		harmony.PatchAll();
 	}
 
-	public static List<KeyValuePair<string[], object>> SetupInteractablesList(string path)
+	public static List<KeyValuePair<string[], object>> SetupInteractables(string path)
 	{
-		List<KeyValuePair<string[], object>> list = new List<KeyValuePair<string[], object>>();
-
 		if (!Directory.Exists(path))
 		{
 			Directory.CreateDirectory(path);
@@ -60,6 +61,36 @@ public class Retailier : BasePlugin
 			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default interactable table at {path}!");
 		}
 
+		List<KeyValuePair<string[], object>> list = SetupPropertyList(path);
+
+		return list;
+	}
+
+	public static List<KeyValuePair<string[], object>> SetupFurniture(string path)
+	{
+		if (!Directory.Exists(path))
+		{
+			Directory.CreateDirectory(path);
+		}
+
+		if (!File.Exists($"{path}\\_base.json"))
+		{
+			string table = "{}";
+
+			File.WriteAllText($"{path}\\_base.json", table);
+
+			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default furniture table at {path}!");
+		}
+
+		List<KeyValuePair<string[], object>> list = SetupPropertyList(path);
+
+		return list;
+	}
+
+	public static List<KeyValuePair<string[], object>> SetupPropertyList(string path)
+	{
+		List<KeyValuePair<string[], object>> list = new List<KeyValuePair<string[], object>>();
+
 		string[] fileNames = Directory.GetFiles(path, "*.json");
 
 		foreach (string fileName in fileNames)
@@ -71,54 +102,26 @@ public class Retailier : BasePlugin
 			{
 				object value = null;
 
-				foreach (var prop in item.Value)
+				foreach (KeyValuePair<string, JsonElement> prop in item.Value)
 				{
-					switch (prop.Value.ValueKind)
+					Plugin.Log.LogInfo($"{item.Key}.{prop.Key} is typeof {prop.Value.ValueKind.ToString()}");
+					// made this one in a fugue state so sorry if the comments are bullshit
+					if(prop.Value.ValueKind == JsonValueKind.Object)
 					{
-						case JsonValueKind.True:
-							value = true;
-							break;
-						case JsonValueKind.False:
-							value = false;
-							break;
-						case JsonValueKind.String:
-							value = prop.Value.ToString();
-							break;
-						case JsonValueKind.Number:
-							if (prop.Value.GetType() == typeof(int))
-							{
-								value = prop.Value.GetInt32();
-							}
-							else if (prop.Value.GetType() == typeof(double))
-							{
-								value = ((float)prop.Value.GetDouble());
-							}
-							break;
-						case JsonValueKind.Array:
-							// so arrays will be received as string lists
-							List<string> valueList = JsonSerializer.Deserialize<List<string>>(prop.Value);
-							// the first entry in the list will determine its type going forward
-							switch (valueList[0].ToString().ToLower())
-							{
-								case "vector2":
-									value = new Vector2(
-										float.Parse(valueList[1]),
-										float.Parse(valueList[2])
-									);
-									break;
-								case "vector3":
-									value = new Vector3(
-										float.Parse(valueList[1]),
-										float.Parse(valueList[2]),
-										float.Parse(valueList[3])
-									);
-									break;
-									/*case "objects":
-										valueList.RemoveAt(0);
-										value = valueList.ToArray();
-										break;*/
-							}
-							break;
+						// make a new list of key value pairs, the object we received is going to be represented like that
+						Dictionary<string, object> valueList = new Dictionary<string, object>();
+						// deserialise the object as a dictionary of KVPs and iterate
+						foreach (KeyValuePair<string, JsonElement> pair in prop.Value.Deserialize<Dictionary<string, JsonElement>>())
+						{
+							// add the KVP with the converted value to the list
+							valueList.Add(pair.Key, Utils.ConvertJSONElement(pair.Value));
+						}
+						// send a dictionary to the list
+						value = valueList;
+					}
+					else
+					{
+						value = Utils.ConvertJSONElement((JsonElement) prop.Value);
 					}
 
 					list.Add(new KeyValuePair<string[], object>(new string[] { item.Key, prop.Key }, value));
@@ -246,25 +249,44 @@ public class Patches
 
 				Type propType = preset.GetType().GetProperty(interactable.Key[1]).PropertyType;
 
+				Plugin.Log.LogInfo($"Preset property {interactable.Key[1]} type is typeof {propType.BaseType.Name}");
+
 				if (propType.BaseType == typeof(Enum))
 				{
 					Utils.SetInteractableProp(preset, interactable.Key[1], Enum.Parse(propType, interactable.Value.ToString()), false);
 				}
-				/*else if (interactable.Value.GetType() == typeof(string[]))
+				else if (propType == typeof(RetailItemPreset))
 				{
-					Plugin.Log.LogInfo("Fired!");
-					// Lists have hard types
-					dynamic list = preset.GetType().GetProperty(interactable.Key[1]).GetValue(preset);
-					Type memberType = preset.GetType().GetGenericArguments()[0];
-					string[] names = (string[]) interactable.Value;
+					// so we're receiving a dictionary
+					Dictionary<string, object> dict = interactable.Value as Dictionary<string, object>;
+					RetailItemPreset newRetailItem = null;
 
-					var objectsOfType = Toolbox.FindObjectsOfType(Il2CppType.From(memberType)).Where(preset => names.Contains(preset.name));
-
-					foreach (var obj in objectsOfType)
+					if (dict.TryGetValue("Copies", out object retailItemToCopy))
 					{
-						list.GetType().GetMethod("Add").Invoke(list, new object[] { obj } );
+						// create a clone of the RetailItemPreset
+						newRetailItem = GameObject.Instantiate(Resources.FindObjectsOfTypeAll<RetailItemPreset>().Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
+						// remove Copies from the dictionary since we're going to iterate over it
+						dict.Remove("Copies");
 					}
-				}*/
+					else
+					{
+						newRetailItem = new RetailItemPreset();
+					}
+
+					// setting up the new RetailItemPreset
+					newRetailItem.name = interactable.Key[0];
+					newRetailItem.itemPreset = preset;
+					preset.retailItem = newRetailItem;
+
+					// now iterate
+					if (dict.Count > 0)
+					{
+						foreach (KeyValuePair<string, object> kvp in dict)
+						{
+							Utils.SetRetailItemProp(newRetailItem, kvp.Key, kvp.Value);
+						}
+					}
+				}
 				else
 				{
 					Utils.SetInteractableProp(preset, interactable.Key[1], interactable.Value, false);
@@ -274,9 +296,19 @@ public class Patches
 			Plugin.Log.LogInfo($"{Retailier.PLUGIN_GUID}: InteractablePresets patched!");
 		}
 	}
+	/*
+	[HarmonyPatch(typeof(Toolbox), "LoadAll")]
+	internal class PatchFurniturePresets
+	{
+		[HarmonyPostfix]
+		public static void Postfix()
+		{
+
+		}
+	}*/
 
 	[HarmonyPatch(typeof(Toolbox), "LoadAll")]
-	internal class AddRetailItems
+	internal class AddMenuItems
 	{
 		[HarmonyPostfix]
 		public static void Postfix()

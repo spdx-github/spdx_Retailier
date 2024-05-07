@@ -1,5 +1,8 @@
 ﻿using Rewired.Utils;
 using SOD.Common;
+using System.Text.Json;
+using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Retailier
 {
@@ -91,6 +94,92 @@ namespace Retailier
 			{
 				Plugin.Log.LogError($"Preset passed is null or destroyed.");
 			}
+		}
+
+		// Sets a field of a given type in an RetailItemPreset to the desired value.
+		public static void SetRetailItemProp(RetailItemPreset preset, string prop, object value, bool suppress = true)
+		{
+			if (!preset.IsNullOrDestroyed())
+			{
+				try
+				{
+					var propToChange = preset.GetType().GetProperty(prop);
+
+					propToChange.SetValue(preset, value);
+				}
+				catch (Exception ex)
+				{
+					if (!suppress)
+					{
+						Plugin.Log.LogError($"Failed to change {preset.GetPresetName()}.{prop} to value '{value.ToString()}'.");
+						Plugin.Log.LogError($"{ex.ToString()}");
+					}
+				}
+			}
+			else if (!suppress)
+			{
+				Plugin.Log.LogError($"Preset passed is null or destroyed.");
+			}
+		}
+
+		// Returns a System object from a JSON value.
+		public static object ConvertJSONElement(JsonElement element)
+		{
+			object value = null;
+
+			switch (element.ValueKind)
+			{
+				case JsonValueKind.True:
+					value = true;
+					break;
+
+				case JsonValueKind.False:
+					value = false;
+					break;
+
+				case JsonValueKind.String:
+					value = element.ToString();
+					break;
+
+				case JsonValueKind.Number:
+					if (element.GetType() == typeof(int))
+					{
+						value = element.GetInt32();
+					}
+					else if (element.GetType() == typeof(double))
+					{
+						value = ((float)element.GetDouble());
+					}
+					break;
+
+				case JsonValueKind.Array:
+					// so arrays will be received as string lists
+					List<string> valueList = JsonSerializer.Deserialize<List<string>>(element);
+					// the first entry in the list will determine its type going forward
+					switch (valueList[0].ToString().ToLower())
+					{
+						case "vector2":
+							value = new Vector2(
+								float.Parse(valueList[1]),
+								float.Parse(valueList[2])
+							);
+							break;
+						case "vector3":
+							value = new Vector3(
+								float.Parse(valueList[1]),
+								float.Parse(valueList[2]),
+								float.Parse(valueList[3])
+							);
+							break;
+							/*case "objects":
+								valueList.RemoveAt(0);
+								value = valueList.ToArray();
+								break;*/
+					}
+					break;
+			}
+
+			return value;
 		}
 	}
 }
