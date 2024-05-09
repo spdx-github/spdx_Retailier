@@ -146,9 +146,9 @@ namespace Retailier
 					{
 						value = element.GetInt32();
 					}
-					else if (element.GetType() == typeof(double))
+					else if (element.GetType() == typeof(float))
 					{
-						value = ((float)element.GetDouble());
+						value = (float) element.GetDouble();
 					}
 					break;
 

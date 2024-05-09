@@ -18,7 +18,7 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.3.0";
+	public const string PLUGIN_VERSION = "1.3.2";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
@@ -39,7 +39,7 @@ public class Retailier : BasePlugin
 
 		var harmony = new Harmony(PLUGIN_GUID);
 
-		Log.LogInfo($"Loaded! Version {PLUGIN_VERSION}");
+		Log.LogInfo($"Loaded!");
 
 		harmony.PatchAll();
 	}
@@ -92,6 +92,8 @@ public class Retailier : BasePlugin
 		List<KeyValuePair<string[], object>> list = new List<KeyValuePair<string[], object>>();
 
 		string[] fileNames = Directory.GetFiles(path, "*.json");
+		// quick sort
+		Array.Sort(fileNames);
 
 		foreach (string fileName in fileNames)
 		{
@@ -143,7 +145,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.3.0\"]}}";
+			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.3.2\"]}}";
 
 			File.WriteAllText($"{path}\\_base.json", table);
 
@@ -151,6 +153,8 @@ public class Retailier : BasePlugin
 		}
 
 		string[] fileNames = Directory.GetFiles(path, "*.json");
+		// quick sort
+		Array.Sort(fileNames);
 
 		foreach (string fileName in fileNames)
 		{
@@ -169,7 +173,7 @@ public class Retailier : BasePlugin
 			}
 			catch
 			{
-				Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Failed to get version from JSON, configuration predates 1.1.1");
+				Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: No metadata in {Path.GetFileName(fileName)}!");
 			}
 
 			// handling Menus as in json
@@ -216,7 +220,7 @@ public class Retailier : BasePlugin
 			// this handles aliases
 			foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
 			{
-				if (overrideOthers && dict.TryGetValue(aliasSet.Key, out string[] toClear))
+				if (overrideOthers && dict.TryGetValue(aliasSet.Key, out string[] none))
 				{
 					dict.Remove(aliasSet.Key);
 				}
@@ -241,6 +245,8 @@ public class Patches
 		public static void Postfix()
 		{
 			var interactables = Retailier.interactables;
+			// cache this bc it's expensive
+			var retailItemsCache = Resources.FindObjectsOfTypeAll<RetailItemPreset>();
 
 			foreach (var interactable in interactables)
 			{
@@ -261,19 +267,20 @@ public class Patches
 					if (dict.TryGetValue("Copies", out object retailItemToCopy))
 					{
 						// create a clone of the RetailItemPreset
-						newRetailItem = GameObject.Instantiate(Resources.FindObjectsOfTypeAll<RetailItemPreset>().Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
+						newRetailItem = GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
 						// remove Copies from the dictionary since we're going to iterate over it
 						dict.Remove("Copies");
+
+						// setting up the new RetailItemPreset
+						newRetailItem.name = interactable.Key[0];
+						newRetailItem.itemPreset = preset;
+						preset.retailItem = newRetailItem;
 					}
 					else
 					{
-						newRetailItem = new RetailItemPreset();
+						// this allows for modifying existing RetailItemPresets
+						newRetailItem = preset.retailItem;
 					}
-
-					// setting up the new RetailItemPreset
-					newRetailItem.name = interactable.Key[0];
-					newRetailItem.itemPreset = preset;
-					preset.retailItem = newRetailItem;
 
 					// now iterate
 					if (dict.Count > 0)
