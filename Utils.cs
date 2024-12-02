@@ -2,7 +2,6 @@
 using SOD.Common;
 using System.Text.Json;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace Retailier
 {
@@ -54,7 +53,7 @@ namespace Retailier
 			}
 		}
 		// Overload. Finds an item in a list instead.
-		public static InteractablePreset GetInteractable(Il2CppSystem.Collections.Generic.List<InteractablePreset> presetList, string name, bool suppress = true)
+		public static InteractablePreset GetInteractable(List<InteractablePreset> presetList, string name, bool suppress = true)
 		{
 			{
 				foreach (InteractablePreset preset in presetList)
@@ -73,7 +72,7 @@ namespace Retailier
 		// Sets a field of a given type in an InteractablePreset to the desired value.
 		public static void SetInteractableProp(InteractablePreset preset, string prop, object value, bool suppress = true)
 		{
-			if (!preset.IsNullOrDestroyed())
+			if (preset != null)
 			{
 				try
 				{
@@ -92,14 +91,14 @@ namespace Retailier
 			}
 			else if (!suppress)
 			{
-				Plugin.Log.LogError($"Preset passed is null or destroyed.");
+				Plugin.Log.LogError($"Preset passed is null.");
 			}
 		}
 
 		// Sets a field of a given type in an RetailItemPreset to the desired value.
 		public static void SetRetailItemProp(RetailItemPreset preset, string prop, object value, bool suppress = true)
 		{
-			if (!preset.IsNullOrDestroyed())
+			if (preset != null)
 			{
 				try
 				{
@@ -118,7 +117,7 @@ namespace Retailier
 			}
 			else if (!suppress)
 			{
-				Plugin.Log.LogError($"Preset passed is null or destroyed.");
+				Plugin.Log.LogError($"Preset passed is null.");
 			}
 		}
 

@@ -3,12 +3,9 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using UnityEngine;
 using SOD.Common;
-using Rewired.Utils;
 using System.Reflection;
 using System.Text.Json;
-using Il2CppInterop.Runtime;
-using System.Linq;
-using System.Text.Json.Nodes;
+using AsmResolver.DotNet.Serialized;
 
 namespace Retailier;
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
@@ -18,7 +15,7 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.3.2";
+	public const string PLUGIN_VERSION = "1.3.3";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
@@ -267,7 +264,7 @@ public class Patches
 					if (dict.TryGetValue("Copies", out object retailItemToCopy))
 					{
 						// create a clone of the RetailItemPreset
-						newRetailItem = GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
+						newRetailItem = (RetailItemPreset) GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
 						// remove Copies from the dictionary since we're going to iterate over it
 						dict.Remove("Copies");
 
@@ -331,7 +328,7 @@ public class Patches
 					{
 						var interactable = Utils.GetInteractable(item);
 						// if the item of the given name exists in the game dictionary:
-						if (!interactable.IsNullOrDestroyed())
+						if (interactable != null)
 						{
 							Utils.AddToMenu(preset, interactable);
 						}
@@ -360,11 +357,13 @@ public class Patches
 					foreach (var item in items)
 					{
 						InteractablePreset newItem = Utils.GetInteractable(item, false);
+
+						string seed = entry.address.district.seed;
 						// ripped straight from the source. should use the pseudorandom number gen from the game
 						float psdRandValue = (newItem.value.y - newItem.value.x) / 4f
-							* Toolbox.Instance.GetPsuedoRandomNumberContained(-0.5f, 0.5f, entry.address.district.seed, out string seed);
+							* Toolbox.Instance.GetPsuedoRandomNumberContained(-0.5f, 0.5f, ref seed);
 						// if the item exists in the preset dictionary:
-						if (!newItem.IsNullOrDestroyed())
+						if (newItem != null)
 						{
 							// get the item's pseudorandom value
 							int value = Mathf.RoundToInt(Mathf.Lerp(newItem.value.x, newItem.value.y,

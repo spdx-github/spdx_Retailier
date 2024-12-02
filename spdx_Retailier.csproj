@@ -11,9 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.688" />
-    <PackageReference Include="MaxWasUnavailable.ShadowsOfDoubt.Libs" Version="37.7.0" />
-    <PackageReference Include="SOD.Common" Version="2.0.2" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.725" />
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="SOD.Common" Version="2.0.6" />
   </ItemGroup>
 
   <ItemGroup>
