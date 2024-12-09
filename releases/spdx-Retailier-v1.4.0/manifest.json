@@ -1,0 +1,11 @@
+{
+  "name": "Retailier",
+  "version_number": "1.4.0",
+  "website_url": "https://github.com/spdx-github/spdx_Retailier",
+  "description": "Framework for changing certain aspects of the vendor system and ingame interactables. By default, diversifies the vendor lists with miscellaneous items that you can't buy in the vanilla game - no more stealing decor items from your neighbours! New in 1.4: smoking cigars and cigarettes!",
+  "author": "spdx",
+  "dependencies": [
+		"BepInEx-BepInExPack_IL2CPP-6.0.698",
+		"Venomaus-SODCommon-2.0.6"
+	]
+}

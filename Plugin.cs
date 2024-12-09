@@ -6,6 +6,8 @@ using SOD.Common;
 using System.Reflection;
 using System.Text.Json;
 using AsmResolver.DotNet.Serialized;
+using System.Diagnostics;
+using static lzma;
 
 namespace Retailier;
 [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, PLUGIN_VERSION)]
@@ -15,7 +17,7 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.3.3";
+	public const string PLUGIN_VERSION = "1.4.0";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
@@ -51,7 +53,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"BanhMi\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Hamburger\"}}, \"BungeoPpangWhole\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"Eclair\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"FairyBread\": {\"destroyWhenAllConsumed\": true}, \"Gimbap\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Hamburger\"}}, \"KabuliBurger\": {\"destroyWhenAllConsumed\": true}, \"PocketWatch\": {\"isClock\": true, \"readingEnabled\": true, \"readingSource\": \"time\"}, \"Razor\": {\"fpsItemOffset\": [\"Vector3\", \"34\", \"-35\", \"-145\"]}, \"ReubenSandwich\": {\"destroyWhenAllConsumed\": true}, \"TikaToast\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}, \"TinnedFood\": {\"retailItem\": {\"Copies\": \"Donut\"}, \"value\": [\"Vector2\", \"2\", \"4\"]}, \"WashingUpLiquid\": {\"value\": [\"Vector2\", \"5\", \"10\"]}, \"YorkiePie\": {\"destroyWhenAllConsumed\": true, \"retailItem\": {\"Copies\": \"Donut\"}}}";
+			string table = "{\"BanhMi\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},\"BungeoPpangWhole\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"Cigar\":{\"consumableAmount\":5,\"destroyWhenAllConsumed\":true,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"50\",\"500\",\"25\"],\"fpsItemRotation\":[\"Vector3\",\"210\",\"120\",\"0\"],\"retailItem\":{\"alertness\":0.25,\"hygiene\":-0.05,\"numb\":0.15}},\"Cigarettes\":{\"consumableAmount\":10,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"-50\",\"250\",\"-50\"],\"fpsItemRotation\":[\"Vector3\",\"160\",\"-30\",\"110\"],\"retailItem\":{\"alertness\":0.15,\"hygiene\":-0.05,\"numb\":0.1}},\"Eclair\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"FairyBread\":{\"destroyWhenAllConsumed\":true},\"Gimbap\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},\"KabuliBurger\":{\"destroyWhenAllConsumed\":true},\"PocketWatch\":{\"isClock\":true,\"readingEnabled\":true,\"readingSource\":\"time\"},\"Razor\":{\"fpsItemOffset\":[\"Vector3\",\"34\",\"-35\",\"-145\"]},\"ReubenSandwich\":{\"destroyWhenAllConsumed\":true},\"SoapBar\":{\"consumableAmount\":16,\"fpsItem\":\"item_application\",\"fpsItemOffset\":[\"Vector3\",\"100\",\"300\",\"-80\"],\"fpsItemRotation\":[\"Vector3\",\"0\",\"180\",\"-80\"],\"retailItem\":{\"hygiene\":0.2,\"wet\":0.1}},\"TikaToast\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"TinnedFood\":{\"retailItem\":\"Donut\",\"value\":[\"Vector2\",\"2\",\"4\"]},\"WashingUpLiquid\":{\"value\":[\"Vector2\",\"5\",\"10\"]},\"YorkiePie\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"}}";
 
 			File.WriteAllText($"{path}\\_base.json", table);
 
@@ -142,7 +144,7 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.3.2\"]}}";
+			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.4.0\"]}}";
 
 			File.WriteAllText($"{path}\\_base.json", table);
 
@@ -235,6 +237,8 @@ public class Retailier : BasePlugin
 
 public class Patches
 {
+	public const bool suppressErrors = false;
+
 	[HarmonyPatch(typeof(Toolbox), "LoadAll")]
 	internal class PatchInteractableProps
 	{
@@ -244,53 +248,100 @@ public class Patches
 			var interactables = Retailier.interactables;
 			// cache this bc it's expensive
 			var retailItemsCache = Resources.FindObjectsOfTypeAll<RetailItemPreset>();
+			var firstPersonItemsCache = Resources.FindObjectsOfTypeAll<FirstPersonItem>();
 
 			foreach (var interactable in interactables)
 			{
-				InteractablePreset preset = Utils.GetInteractable(interactable.Key[0], false);
+				InteractablePreset preset = Utils.GetInteractable(interactable.Key[0], suppressErrors);
 
 				Type propType = preset.GetType().GetProperty(interactable.Key[1]).PropertyType;
 
+				// if the property is an enumerator:
 				if (propType.BaseType == typeof(Enum))
 				{
-					Utils.SetInteractableProp(preset, interactable.Key[1], Enum.Parse(propType, interactable.Value.ToString()), false);
+					Utils.SetInteractableProp(preset, interactable.Key[1], Enum.Parse(propType, interactable.Value.ToString()), suppressErrors);
 				}
+				// if the property is a RetailItemPreset:
 				else if (propType == typeof(RetailItemPreset))
 				{
-					// so we're receiving a dictionary
-					Dictionary<string, object> dict = interactable.Value as Dictionary<string, object>;
 					RetailItemPreset newRetailItem = null;
 
-					if (dict.TryGetValue("Copies", out object retailItemToCopy))
-					{
-						// create a clone of the RetailItemPreset
-						newRetailItem = (RetailItemPreset) GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
-						// remove Copies from the dictionary since we're going to iterate over it
-						dict.Remove("Copies");
+					if (interactable.Value is string) {
+						newRetailItem = (RetailItemPreset)GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)interactable.Value).FirstOrDefault());
 
-						// setting up the new RetailItemPreset
-						newRetailItem.name = interactable.Key[0];
-						newRetailItem.itemPreset = preset;
-						preset.retailItem = newRetailItem;
+						newRetailItem.name = (string) interactable.Value;
 					}
-					else
-					{
-						// this allows for modifying existing RetailItemPresets
-						newRetailItem = preset.retailItem;
-					}
+					else {
+						// so we're receiving a dictionary
+						Dictionary<string, object> dict = interactable.Value as Dictionary<string, object>;
 
-					// now iterate
-					if (dict.Count > 0)
-					{
-						foreach (KeyValuePair<string, object> kvp in dict)
+						if (dict.TryGetValue("Copies", out object retailItemToCopy))
 						{
-							Utils.SetRetailItemProp(newRetailItem, kvp.Key, kvp.Value);
+							// create a clone of the RetailItemPreset
+							newRetailItem = (RetailItemPreset)GameObject.Instantiate(retailItemsCache.Where(item => item.name == (string)retailItemToCopy).FirstOrDefault());
+							// remove Copies from the dictionary since we're going to iterate over it
+							dict.Remove("Copies");
+
+							// setting up the new RetailItemPreset
+							newRetailItem.name = interactable.Key[0];
+							newRetailItem.itemPreset = preset;
+						}
+						else
+						{
+							// this allows for modifying existing RetailItemPresets
+							newRetailItem = preset.retailItem;
+						}
+
+						// now iterate
+						if (dict.Count > 0)
+						{
+							foreach (KeyValuePair<string, object> kvp in dict)
+							{
+								Utils.SetRetailItemProp(newRetailItem, kvp.Key, kvp.Value, suppressErrors);
+							}
 						}
 					}
+
+					Utils.SetInteractableProp(preset, interactable.Key[1], newRetailItem, suppressErrors);
 				}
+				// if the property is a FirstPersonItem:
+				else if (propType == typeof(FirstPersonItem)) {
+					// value corresponds with the name of a FirstPersonItem
+					FirstPersonItem newFPItem = null;
+
+					if (interactable.Value is string) {
+						newFPItem = (FirstPersonItem)firstPersonItemsCache.Where(item => item.name == (string)interactable.Value).FirstOrDefault();
+					}
+					else {
+						// we're receiving a dictionary, like RetailItem
+						Dictionary<string, object> dict = interactable.Value as Dictionary<string, object>;
+						
+						if (dict.TryGetValue("Copies", out object FPItemToCopy))
+						{
+							newFPItem = (FirstPersonItem)firstPersonItemsCache.Where(item => item.name == (string) FPItemToCopy).FirstOrDefault();
+
+							dict.Remove("Copies");
+						}
+						else {
+							newFPItem = preset.fpsItem;
+						}
+
+						// now iterate
+						if (dict.Count > 0)
+						{
+							foreach (KeyValuePair<string, object> kvp in dict)
+							{
+								Utils.SetFPItemProp(newFPItem, kvp.Key, kvp.Value, suppressErrors);
+							}
+						}
+					}
+
+					Utils.SetInteractableProp(preset, interactable.Key[1], newFPItem, suppressErrors);
+				}
+				// and for everything else, just set the value to what's specified
 				else
 				{
-					Utils.SetInteractableProp(preset, interactable.Key[1], interactable.Value, false);
+					Utils.SetInteractableProp(preset, interactable.Key[1], interactable.Value, suppressErrors);
 				}
 			}
 

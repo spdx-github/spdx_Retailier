@@ -95,7 +95,7 @@ namespace Retailier
 			}
 		}
 
-		// Sets a field of a given type in an RetailItemPreset to the desired value.
+		// Sets a field of a given type in a RetailItemPreset to the desired value.
 		public static void SetRetailItemProp(RetailItemPreset preset, string prop, object value, bool suppress = true)
 		{
 			if (preset != null)
@@ -121,6 +121,32 @@ namespace Retailier
 			}
 		}
 
+		// Sets a field of a given type in a FirstPersonItem to the desired value.
+		public static void SetFPItemProp(FirstPersonItem item, string prop, object value, bool suppress = true)
+		{
+			if (item != null)
+			{
+				try
+				{
+					var propToChange = item.GetType().GetProperty(prop);
+
+					propToChange.SetValue(item, value);
+				}
+				catch (Exception ex)
+				{
+					if (!suppress)
+					{
+						Plugin.Log.LogError($"Failed to change {item.GetPresetName()}.{prop} to value '{value.ToString()}'.");
+						Plugin.Log.LogError($"{ex.ToString()}");
+					}
+				}
+			}
+			else if (!suppress)
+			{
+				Plugin.Log.LogError($"Item passed is null.");
+			}
+		}
+
 		// Returns a System object from a JSON value.
 		public static object ConvertJSONElement(JsonElement element)
 		{
@@ -141,14 +167,7 @@ namespace Retailier
 					break;
 
 				case JsonValueKind.Number:
-					if (element.GetType() == typeof(int))
-					{
-						value = element.GetInt32();
-					}
-					else if (element.GetType() == typeof(float))
-					{
-						value = (float) element.GetDouble();
-					}
+					value = (float) element.GetDouble();
 					break;
 
 				case JsonValueKind.Array:
