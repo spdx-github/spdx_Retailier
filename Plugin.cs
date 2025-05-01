@@ -17,13 +17,13 @@ public class Retailier : BasePlugin
 
 	public const string PLUGIN_NAME = "[SPDX] Retailier";
 
-	public const string PLUGIN_VERSION = "1.4.0";
+	public const string PLUGIN_VERSION = "1.4.1";
 
 	public static string PLUGIN_PATH = Lib.SaveGame.GetSavestoreDirectoryPath(Assembly.GetExecutingAssembly());
 
 	public static string PLUGIN_PATH_MENUS = $"{PLUGIN_PATH}\\menus\\";
 	public static string PLUGIN_PATH_INTERACTABLES = $"{PLUGIN_PATH}\\interactables\\";
-	public static string PLUGIN_PATH_FURNITURE = $"{PLUGIN_PATH}\\furniture\\";
+	//public static string PLUGIN_PATH_FURNITURE = $"{PLUGIN_PATH}\\furniture\\";
 
 	public static Dictionary<string, string[]> menus = SetupMenusDict(PLUGIN_PATH_MENUS);
 	public static List<KeyValuePair<string[], object>> interactables = SetupInteractables(PLUGIN_PATH_INTERACTABLES);
@@ -38,7 +38,7 @@ public class Retailier : BasePlugin
 
 		var harmony = new Harmony(PLUGIN_GUID);
 
-		Log.LogInfo($"Loaded!");
+		Log.LogInfo("Loaded!");
 
 		harmony.PatchAll();
 	}
@@ -53,8 +53,17 @@ public class Retailier : BasePlugin
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"BanhMi\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},\"BungeoPpangWhole\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"Cigar\":{\"consumableAmount\":5,\"destroyWhenAllConsumed\":true,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"50\",\"500\",\"25\"],\"fpsItemRotation\":[\"Vector3\",\"210\",\"120\",\"0\"],\"retailItem\":{\"alertness\":0.25,\"hygiene\":-0.05,\"numb\":0.15}},\"Cigarettes\":{\"consumableAmount\":10,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"-50\",\"250\",\"-50\"],\"fpsItemRotation\":[\"Vector3\",\"160\",\"-30\",\"110\"],\"retailItem\":{\"alertness\":0.15,\"hygiene\":-0.05,\"numb\":0.1}},\"Eclair\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"FairyBread\":{\"destroyWhenAllConsumed\":true},\"Gimbap\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},\"KabuliBurger\":{\"destroyWhenAllConsumed\":true},\"PocketWatch\":{\"isClock\":true,\"readingEnabled\":true,\"readingSource\":\"time\"},\"Razor\":{\"fpsItemOffset\":[\"Vector3\",\"34\",\"-35\",\"-145\"]},\"ReubenSandwich\":{\"destroyWhenAllConsumed\":true},\"SoapBar\":{\"consumableAmount\":16,\"fpsItem\":\"item_application\",\"fpsItemOffset\":[\"Vector3\",\"100\",\"300\",\"-80\"],\"fpsItemRotation\":[\"Vector3\",\"0\",\"180\",\"-80\"],\"retailItem\":{\"hygiene\":0.2,\"wet\":0.1}},\"TikaToast\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"TinnedFood\":{\"retailItem\":\"Donut\",\"value\":[\"Vector2\",\"2\",\"4\"]},\"WashingUpLiquid\":{\"value\":[\"Vector2\",\"5\",\"10\"]},\"YorkiePie\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"}}";
+			string table = "{\"BreathMints\":{\"consumableAmount\":8,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"0\",\"0\",\"0\"],\"fpsItemRotation\":[\"Vector3\",\"90\",\"0\",\"0\"],\"retailItem\":{\"hygiene\":0.1}},\"BungeoPpangWhole\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"Eclair\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"FairyBread\":{\"destroyWhenAllConsumed\":true},\"Gimbap\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},\"KabuliBurger\":{\"destroyWhenAllConsumed\":true},\"PocketWatch\":{\"isClock\":true,\"readingEnabled\":true,\"readingSource\":\"time\"},\"Razor\":{\"fpsItemOffset\":[\"Vector3\",\"34\",\"-35\",\"-145\"]},\"Receipt\":{\"disposal\":\"anywhere\",\"isLitter\":true},\"ReubenSandwich\":{\"destroyWhenAllConsumed\":true},\"SoapBar\":{\"consumableAmount\":16,\"destroyWhenAllConsumed\":true,\"fpsItem\":\"item_application\",\"fpsItemOffset\":[\"Vector3\",\"100\",\"300\",\"-80\"],\"fpsItemRotation\":[\"Vector3\",\"0\",\"180\",\"-80\"],\"retailItem\":{\"hygiene\":0.2,\"wet\":0.1}},\"TikaToast\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"},\"TinnedFood\":{\"retailItem\":\"Donut\",\"value\":[\"Vector2\",\"2\",\"4\"]},\"TravelReceipt\":{\"disposal\":\"anywhere\",\"isLitter\":true},\"WashingUpLiquid\":{\"value\":[\"Vector2\",\"5\",\"10\"]}}";
 
+			/*
+			 * rip these things lol
+			 * \"BanhMi\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Hamburger\"},
+			 * \"Cigar\":{\"consumableAmount\":5,\"destroyWhenAllConsumed\":true,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"50\",\"500\",\"25\"],\"fpsItemRotation\":[\"Vector3\",\"210\",\"120\",\"0\"],\"retailItem\":{\"alertness\":0.25,\"hygiene\":-0.05,\"numb\":0.15}},
+			 * \"Cigarettes\":{\"consumableAmount\":10,\"fpsItem\":\"food_medicine\",\"fpsItemOffset\":[\"Vector3\",\"-50\",\"250\",\"-50\"],\"fpsItemRotation\":[\"Vector3\",\"160\",\"-30\",\"110\"],\"retailItem\":{\"alertness\":0.15,\"hygiene\":-0.05,\"numb\":0.1}},
+			 * ,\"YorkiePie\":{\"destroyWhenAllConsumed\":true,\"retailItem\":\"Donut\"}
+			 */
+
+			// create the file
 			File.WriteAllText($"{path}\\_base.json", table);
 
 			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default interactable table at {path}!");
@@ -91,8 +100,20 @@ public class Retailier : BasePlugin
 		List<KeyValuePair<string[], object>> list = new List<KeyValuePair<string[], object>>();
 
 		string[] fileNames = Directory.GetFiles(path, "*.json");
-		// quick sort
-		Array.Sort(fileNames);
+
+		if (fileNames.Length > 0)
+		{
+			// quick sort	
+			try { Array.Sort(fileNames); }
+			catch
+			{
+				Plugin.Log.LogError($"{PLUGIN_GUID}: Error sorting file names for {path}!");
+			}
+		}
+		else
+		{
+			Plugin.Log.LogError($"{PLUGIN_GUID}: {path} is empty!");
+		}
 
 		foreach (string fileName in fileNames)
 		{
@@ -134,96 +155,122 @@ public class Retailier : BasePlugin
 
 	public static Dictionary<string, string[]> SetupMenusDict(string path)
 	{
+		// create a dictionary to be returned at the end of the function
 		Dictionary<string, string[]> dict = new Dictionary<string, string[]>();
 
+		// if the appropriate directory doesn't exist, make it
 		if (!Directory.Exists(path))
 		{
 			Directory.CreateDirectory(path);
 		}
 
+		// if the base config doesn't exist:
 		if (!File.Exists($"{path}\\_base.json"))
 		{
 			// just create a new table as hardcoded default
-			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.4.0\"]}}";
+			string table = "{\"Aliases\": {\"Bar\": [\"AmericanBar\"], \"ChineseEatery\": [\"Chinese\"], \"FastFood\": [\"AmericanDiner\"], \"HardwareStore\": [\"Hardware\"]}, \"Combines\": {\"Supermarket\": [\"SupermarketFruit\", \"SupermarketMagazines\", \"SupermarketShelf\"]}, \"Menus\": {\"AmericanBar\": [\"FishNChipsInBox\", \"MushyPeas\", \"YorkiePie\", \"TikaToast\"], \"AmericanDiner\": [\"ReubenSandwich\", \"PoutineInBox\"], \"Ballroom\": [\"Eclair\", \"Crepe\"], \"BlackmarketTrader\": [\"PropGun\", \"Diamond\", \"JadeNecklace\", \"ClawOfTheFathomsFirstEdition\", \"ChateauDArc1868\"], \"Chemist\": [\"Glasses\", \"ToiletBrush\", \"WashingUpLiquid\"], \"Chinese\": [\"Fishlafel\", \"KabuliBurger\", \"BanhMi\", \"BungeoPpangWhole\", \"Gimbap\", \"BreathMints\"], \"Hardware\": [\"PhotoChemicals\", \"FilmCanister\", \"Plunger\", \"MugEmpty\", \"PaintBucket\", \"PaintTube\", \"PaintBrush\", \"Pallette\", \"CleanPlate\", \"CleaningSpray\", \"PowerDrill\", \"PackingTape\", \"DuctTape\", \"Wool\", \"Thread\", \"KnittingNeedle\", \"JerryCan\", \"OilCan\", \"Bleach\", \"WashingUpLiquid\"], \"PawnShop\": [\"JadeNecklace\", \"WristWatch\", \"PocketWatch\", \"FilmCanister\", \"Katana\", \"TradingCard\", \"BaseballCap\"], \"SupermarketFruit\": [\"MegaMite\", \"Ketchup\", \"Mustard\", \"Vinegar\", \"Salt\", \"Pepper\", \"TinnedFood\", \"FairyBread\", \"PickapepperSauce\"], \"SupermarketMagazines\": [\"PackingTape\", \"Pencil\", \"Sharpener\", \"Eraser\", \"VideoTape\"], \"SupermarketShelf\": [\"Toothbrush\", \"Sponge\", \"Comb\", \"Camera\", \"FilmCanister\", \"MugEmpty\", \"Teacup\", \"WristWatch\", \"Battery\", \"Battery9V\", \"WhiteDice\", \"RedDice\", \"Bleach\", \"WashingUpLiquid\"]}, \"Meta\": {\"Override\": [\"False\"], \"Version\": [\"1.4.1\"]}}";
 
+			// write it all to a file
 			File.WriteAllText($"{path}\\_base.json", table);
 
 			Plugin.Log.LogInfo($"{PLUGIN_GUID}: Created default menu table at {path}!");
 		}
 
+		// get all file names in the directory
 		string[] fileNames = Directory.GetFiles(path, "*.json");
-		// quick sort
-		Array.Sort(fileNames);
+
+		// try to sort the filename list
+		try { Array.Sort(fileNames); }
+		catch
+		{
+			Plugin.Log.LogError($"{PLUGIN_GUID}: Error sorting file names for {path}!");
+		}
 
 		foreach (string fileName in fileNames)
 		{
+			// open the file and read all of its text
 			string file = File.ReadAllText(fileName);
+
+			// deserialise the file into a json object
 			var json = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string[]>>>(file);
+			// for other users: override other keys in the dictionary we'll return
 			bool overrideOthers = false;
 
+			// metadata setup
 			try
 			{
+				// check for version mismatch
 				if (json["Meta"]["Version"][0] != PLUGIN_VERSION)
 				{
-					Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: Version mismatch! Plugin is {PLUGIN_VERSION}, JSON version is {json["Meta"]["Version"][0]}");
+					Plugin.Log.LogWarning($"{PLUGIN_GUID}: Version mismatch! Plugin is {PLUGIN_VERSION}, JSON version is {json["Meta"]["Version"][0]}");
 				}
-
+				// set the override flag
 				overrideOthers = bool.Parse(json["Meta"]["Override"][0]);
 			}
 			catch
 			{
-				Plugin.Log.LogWarning($"{Retailier.PLUGIN_GUID}: No metadata in {Path.GetFileName(fileName)}!");
+				Plugin.Log.LogWarning($"{PLUGIN_GUID}: No metadata in {Path.GetFileName(fileName)}!");
 			}
 
-			// handling Menus as in json
+			// retrieve the Menus KVP set in the file
 			foreach (KeyValuePair<string, string[]> menu in json["Menus"])
 			{
+				// if the key isn't in the dictionary, add it with its value
 				if (!dict.TryGetValue(menu.Key, out string[] none))
 				{
 					dict.Add(menu.Key, menu.Value);
 				}
+				// if this file overrides others, override the existing key
 				else if (overrideOthers)
 				{
 					dict[menu.Key] = menu.Value;
 				}
 			}
-			// this handles combines
+			// retrieve the Combines KVP set in the file
+			// this is for adding things like standing kiosks' menus to the shopkeeper's
 			foreach (KeyValuePair<string, string[]> combine in json["Combines"])
 			{
-				// init as list so it's easy to append to
+				// new list for item names from other menus
 				List<string> itemsToCombine = new List<string>();
 
+				// iterate through each menu name
 				foreach (string combineValKey in combine.Value)
 				{
+					// add the items from the given menu to the big list
 					itemsToCombine.AddRange(json["Menus"][combineValKey]);
 				}
 
 				// if the menu already exists:
 				if (dict.TryGetValue(combine.Key, out string[] existingItems))
 				{
+					// if we're overriding:
 					if (overrideOthers)
 					{
+						// completely override other changes
 						existingItems = itemsToCombine.ToArray();
 					}
 					else
 					{
+						// just add them
 						existingItems.Concat(itemsToCombine);
 					}
 				}
-				else
+				else // if it doesn't, add a new one with the contents here
 				{
 					dict.Add(combine.Key, itemsToCombine.ToArray());
 				}
 			}
 
-			// this handles aliases
+			// retrieve the Aliases KVP set in the file
+			// this is for making two menus the same, basically
 			foreach (KeyValuePair<string, string[]> aliasSet in json["Aliases"])
 			{
+				// override precheck: remove any changes that others have made prior to our addition
 				if (overrideOthers && dict.TryGetValue(aliasSet.Key, out string[] none))
 				{
 					dict.Remove(aliasSet.Key);
 				}
-
+				// iterate through the aliases and add them to the dictionary
 				foreach (string alias in aliasSet.Value)
 				{
 					dict.Add(aliasSet.Key, json["Menus"][alias]);
@@ -407,7 +454,7 @@ public class Patches
 				{
 					foreach (var item in items)
 					{
-						InteractablePreset newItem = Utils.GetInteractable(item, false);
+						InteractablePreset newItem = Utils.GetInteractable(item, suppressErrors);
 
 						string seed = entry.address.district.seed;
 						// ripped straight from the source. should use the pseudorandom number gen from the game
